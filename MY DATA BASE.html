@@ -3,92 +3,104 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Candidate Record Manager</title>
+  <title>my database</title>
   <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --line: #d1d5db;
+      --primary: #0f766e;
+      --danger: #dc2626;
+    }
+    * { box-sizing: border-box; }
     body {
-      font-family: Arial, sans-serif;
-      background: #f4f6f8;
       margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
       padding: 20px;
     }
-    .container {
-      max-width: 1100px;
+    .wrap {
+      max-width: 1200px;
       margin: auto;
-      background: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      background: var(--card);
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 8px 20px rgba(0,0,0,.08);
     }
-    h2 {
-      margin-top: 0;
-      text-align: center;
-    }
+    h1 { margin: 0 0 12px; font-size: 24px; }
     form {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 12px;
-      margin-bottom: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 10px;
+      margin-bottom: 14px;
     }
     input, select, button {
+      width: 100%;
       padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
       font-size: 14px;
     }
     button {
-      background: #007bff;
-      color: white;
-      border: none;
+      border: 0;
+      background: var(--primary);
+      color: #fff;
       cursor: pointer;
     }
-    button:hover {
-      background: #0056b3;
+    button:hover { opacity: .92; }
+    .toolbar {
+      display: grid;
+      grid-template-columns: 1fr 160px;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .table-box {
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 10px;
     }
     table {
       width: 100%;
       border-collapse: collapse;
-      overflow-x: auto;
-      display: block;
+      min-width: 1100px;
     }
     th, td {
-      border: 1px solid #ddd;
+      border-bottom: 1px solid #e5e7eb;
       padding: 8px;
       text-align: left;
       white-space: nowrap;
+      font-size: 13px;
     }
-    th {
-      background: #007bff;
-      color: white;
-    }
-    .delete-btn {
-      background: #dc3545;
-      padding: 6px 10px;
-      border-radius: 4px;
+    th { background: #ecfeff; }
+    .btn-danger {
+      background: var(--danger);
+      border: 0;
       color: #fff;
-      border: none;
+      padding: 6px 10px;
+      border-radius: 6px;
       cursor: pointer;
     }
-    .delete-btn:hover {
-      background: #b02a37;
-    }
+    .muted { color: #6b7280; font-size: 13px; margin-top: 8px; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Candidate Record Form</h2>
+  <div class="wrap">
+    <h1>Candidate Record - my database</h1>
 
     <form id="candidateForm">
-      <input type="text" id="firstName" placeholder="First Name" required />
-      <input type="text" id="middleName" placeholder="Middle Name" />
-      <input type="text" id="lastName" placeholder="Last Name" required />
-      <input type="text" id="fatherName" placeholder="Father Name" required />
-      <input type="date" id="dob" required />
-      <input type="text" id="trade" placeholder="Trade" required />
-      <input type="tel" id="mobile" placeholder="Mobile No" required />
-      <input type="tel" id="whatsapp" placeholder="WhatsApp No" />
-      <input type="email" id="email" placeholder="Email ID" />
+      <input id="firstName" placeholder="First Name" required />
+      <input id="middleName" placeholder="Middle Name" />
+      <input id="lastName" placeholder="Last Name" required />
+      <input id="fatherName" placeholder="Father Name" required />
+      <input id="dob" type="date" required />
+      <input id="trade" placeholder="Trade" required />
+      <input id="mobile" type="tel" placeholder="Mobile No" required />
+      <input id="whatsapp" type="tel" placeholder="WhatsApp No" />
+      <input id="email" type="email" placeholder="Email ID" />
       <select id="status" required>
-        <option value="">Select Status</option>
+        <option value="">Status</option>
         <option>Active</option>
         <option>Pending</option>
         <option>Selected</option>
@@ -97,86 +109,127 @@
       <button type="submit">Add Record</button>
     </form>
 
-    <table id="recordTable">
-      <thead>
-        <tr>
-          <th>First Name</th>
-          <th>Middle Name</th>
-          <th>Last Name</th>
-          <th>Father Name</th>
-          <th>DOB</th>
-          <th>Trade</th>
-          <th>Mobile</th>
-          <th>WhatsApp</th>
-          <th>Email</th>
-          <th>Status</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+    <div class="toolbar">
+      <input id="search" placeholder="Search by name, mobile, trade..." />
+      <button id="clearAll" type="button">Clear All</button>
+    </div>
+
+    <div class="table-box">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>First</th>
+            <th>Middle</th>
+            <th>Last</th>
+            <th>Father</th>
+            <th>DOB</th>
+            <th>Trade</th>
+            <th>Mobile</th>
+            <th>WhatsApp</th>
+            <th>Email</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+    <div class="muted">Data browser localStorage me save rahega.</div>
   </div>
 
   <script>
+    const KEY = "candidate_records_v2";
     const form = document.getElementById("candidateForm");
-    const tableBody = document.querySelector("#recordTable tbody");
+    const rows = document.getElementById("rows");
+    const searchInput = document.getElementById("search");
+    const clearAllBtn = document.getElementById("clearAll");
 
-    let records = JSON.parse(localStorage.getItem("candidateRecords")) || [];
+    let records = JSON.parse(localStorage.getItem(KEY) || "[]");
 
-    function saveRecords() {
-      localStorage.setItem("candidateRecords", JSON.stringify(records));
+    function save() {
+      localStorage.setItem(KEY, JSON.stringify(records));
     }
 
-    function renderRecords() {
-      tableBody.innerHTML = "";
-      records.forEach((rec, index) => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td>${rec.firstName}</td>
-          <td>${rec.middleName}</td>
-          <td>${rec.lastName}</td>
-          <td>${rec.fatherName}</td>
-          <td>${rec.dob}</td>
-          <td>${rec.trade}</td>
-          <td>${rec.mobile}</td>
-          <td>${rec.whatsapp}</td>
-          <td>${rec.email}</td>
-          <td>${rec.status}</td>
-          <td><button class="delete-btn" onclick="deleteRecord(${index})">Delete</button></td>
-        `;
-        tableBody.appendChild(row);
+    function esc(v) {
+      return String(v || "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;");
+    }
+
+    function render() {
+      const q = searchInput.value.trim().toLowerCase();
+      rows.innerHTML = "";
+
+      const filtered = records.filter(r => {
+        const blob = [
+          r.firstName, r.middleName, r.lastName, r.fatherName,
+          r.trade, r.mobile, r.whatsapp, r.email, r.status
+        ].join(" ").toLowerCase();
+        return blob.includes(q);
+      });
+
+      filtered.forEach((r, i) => {
+        const realIndex = records.indexOf(r);
+        rows.insertAdjacentHTML("beforeend", `
+          <tr>
+            <td>${i + 1}</td>
+            <td>${esc(r.firstName)}</td>
+            <td>${esc(r.middleName)}</td>
+            <td>${esc(r.lastName)}</td>
+            <td>${esc(r.fatherName)}</td>
+            <td>${esc(r.dob)}</td>
+            <td>${esc(r.trade)}</td>
+            <td>${esc(r.mobile)}</td>
+            <td>${esc(r.whatsapp)}</td>
+            <td>${esc(r.email)}</td>
+            <td>${esc(r.status)}</td>
+            <td><button class="btn-danger" data-del="${realIndex}">Delete</button></td>
+          </tr>
+        `);
       });
     }
 
-    function deleteRecord(index) {
-      records.splice(index, 1);
-      saveRecords();
-      renderRecords();
-    }
-
-    form.addEventListener("submit", function (e) {
+    form.addEventListener("submit", (e) => {
       e.preventDefault();
-
-      const record = {
-        firstName: document.getElementById("firstName").value.trim(),
-        middleName: document.getElementById("middleName").value.trim(),
-        lastName: document.getElementById("lastName").value.trim(),
-        fatherName: document.getElementById("fatherName").value.trim(),
-        dob: document.getElementById("dob").value,
-        trade: document.getElementById("trade").value.trim(),
-        mobile: document.getElementById("mobile").value.trim(),
-        whatsapp: document.getElementById("whatsapp").value.trim(),
-        email: document.getElementById("email").value.trim(),
-        status: document.getElementById("status").value
+      const rec = {
+        firstName: firstName.value.trim(),
+        middleName: middleName.value.trim(),
+        lastName: lastName.value.trim(),
+        fatherName: fatherName.value.trim(),
+        dob: dob.value,
+        trade: trade.value.trim(),
+        mobile: mobile.value.trim(),
+        whatsapp: whatsapp.value.trim(),
+        email: email.value.trim(),
+        status: status.value
       };
-
-      records.push(record);
-      saveRecords();
-      renderRecords();
+      records.push(rec);
+      save();
       form.reset();
+      render();
     });
 
-    renderRecords();
+    rows.addEventListener("click", (e) => {
+      const idx = e.target.getAttribute("data-del");
+      if (idx === null) return;
+      records.splice(Number(idx), 1);
+      save();
+      render();
+    });
+
+    searchInput.addEventListener("input", render);
+
+    clearAllBtn.addEventListener("click", () => {
+      if (!confirm("Saare records delete karne hain?")) return;
+      records = [];
+      save();
+      render();
+    });
+
+    render();
   </script>
 </body>
 </html>
