@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Candidate Record Manager</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1100px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+    h2 {
+      margin-top: 0;
+      text-align: center;
+    }
+    form {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    input, select, button {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    button {
+      background: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow-x: auto;
+      display: block;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+      white-space: nowrap;
+    }
+    th {
+      background: #007bff;
+      color: white;
+    }
+    .delete-btn {
+      background: #dc3545;
+      padding: 6px 10px;
+      border-radius: 4px;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+    .delete-btn:hover {
+      background: #b02a37;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Candidate Record Form</h2>
+
+    <form id="candidateForm">
+      <input type="text" id="firstName" placeholder="First Name" required />
+      <input type="text" id="middleName" placeholder="Middle Name" />
+      <input type="text" id="lastName" placeholder="Last Name" required />
+      <input type="text" id="fatherName" placeholder="Father Name" required />
+      <input type="date" id="dob" required />
+      <input type="text" id="trade" placeholder="Trade" required />
+      <input type="tel" id="mobile" placeholder="Mobile No" required />
+      <input type="tel" id="whatsapp" placeholder="WhatsApp No" />
+      <input type="email" id="email" placeholder="Email ID" />
+      <select id="status" required>
+        <option value="">Select Status</option>
+        <option>Active</option>
+        <option>Pending</option>
+        <option>Selected</option>
+        <option>Rejected</option>
+      </select>
+      <button type="submit">Add Record</button>
+    </form>
+
+    <table id="recordTable">
+      <thead>
+        <tr>
+          <th>First Name</th>
+          <th>Middle Name</th>
+          <th>Last Name</th>
+          <th>Father Name</th>
+          <th>DOB</th>
+          <th>Trade</th>
+          <th>Mobile</th>
+          <th>WhatsApp</th>
+          <th>Email</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script>
+    const form = document.getElementById("candidateForm");
+    const tableBody = document.querySelector("#recordTable tbody");
+
+    let records = JSON.parse(localStorage.getItem("candidateRecords")) || [];
+
+    function saveRecords() {
+      localStorage.setItem("candidateRecords", JSON.stringify(records));
+    }
+
+    function renderRecords() {
+      tableBody.innerHTML = "";
+      records.forEach((rec, index) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${rec.firstName}</td>
+          <td>${rec.middleName}</td>
+          <td>${rec.lastName}</td>
+          <td>${rec.fatherName}</td>
+          <td>${rec.dob}</td>
+          <td>${rec.trade}</td>
+          <td>${rec.mobile}</td>
+          <td>${rec.whatsapp}</td>
+          <td>${rec.email}</td>
+          <td>${rec.status}</td>
+          <td><button class="delete-btn" onclick="deleteRecord(${index})">Delete</button></td>
+        `;
+        tableBody.appendChild(row);
+      });
+    }
+
+    function deleteRecord(index) {
+      records.splice(index, 1);
+      saveRecords();
+      renderRecords();
+    }
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const record = {
+        firstName: document.getElementById("firstName").value.trim(),
+        middleName: document.getElementById("middleName").value.trim(),
+        lastName: document.getElementById("lastName").value.trim(),
+        fatherName: document.getElementById("fatherName").value.trim(),
+        dob: document.getElementById("dob").value,
+        trade: document.getElementById("trade").value.trim(),
+        mobile: document.getElementById("mobile").value.trim(),
+        whatsapp: document.getElementById("whatsapp").value.trim(),
+        email: document.getElementById("email").value.trim(),
+        status: document.getElementById("status").value
+      };
+
+      records.push(record);
+      saveRecords();
+      renderRecords();
+      form.reset();
+    });
+
+    renderRecords();
+  </script>
+</body>
+</html>
